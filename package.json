@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/mgonto/tessel-lock/issues"
   },
-  "homepage": "https://github.com/mgonto/tessel-lock"
+  "homepage": "https://github.com/mgonto/tessel-lock",
+  "dependencies": {
+    "servo-pca9685": "^0.1.3"
+  }
 }
