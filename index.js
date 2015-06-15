@@ -3,23 +3,7 @@ var servo = require('./servo');
 var wifi = require('./wifi');
 var hyperlock = require('auth0-hyperlock-client');
 
-var servoInit = servo.init({
-  PORT: config.SERVO_PORT,
-  UID: config.SERVO_UID
-});
-
-function lock() {
-  return servoInit.then(function() {
-    return servo.move(120, true);
-  });
-}
-
-function unlock() {
-  return servoInit.then(function() {
-    return servo.move(120, false);
-  });
-} 
-
+var servoInit = servo.init(config.servo);
 
 wifi.connect(config.NETWORK).then(function(data) {
 
@@ -31,14 +15,14 @@ wifi.connect(config.NETWORK).then(function(data) {
 
   client.on('message', function (m) {
     if (m.action === 'lock') {
-      lock().then(function() {
+      servoInit.lock().then(function() {
         console.log("Locked");
       }, function(error) {
         console.log("Cannot lock", err);
       });
     }
     if (m.action === 'unlock') {
-      unlock().then(function() {
+      servoInit.unlock().then(function() {
         console.log("Unlocked");
       }, function(error) {
         console.log("Cannot unlock", err);
