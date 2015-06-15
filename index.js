@@ -23,17 +23,16 @@ bluetooth.init();
 bluetooth.on("wifi-configure", function(data){
   config.network = data;
 
-  console.log("WIFI CONFIGURATION", config.network);
+  console.log("[instruction] wifi-configure: %j", config.network);
 });
 
 bluetooth.on("wifi-release", function(data){
-
-  console.log('disconnect wifi')
+  console.log("[instruction] wifi-release");
   wifi.disconnect();
 });
 
 bluetooth.on("wifi-connect", function(data){
-  console.log("WIFI CONNECTION");
+  console.log("[instruction] wifi-connect");
   wifi.connect(config.network).then(networkready, networkerror);
 });
 
