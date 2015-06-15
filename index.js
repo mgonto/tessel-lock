@@ -37,7 +37,7 @@ bluetooth.on("wifi-connect", function(data){
 });
 
 bluetooth.on("device-pair", function(data){
-
+  console.log("[instruction] device-pair");
   config.DEVICE_TOKEN = data.device_token
   pairDevice();
 

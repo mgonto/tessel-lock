@@ -9,7 +9,7 @@ var observers = {
 	"wifi-configure":[],
 	"wifi-release":[],
 	"wifi-connect":[],
-	"hyperlock-pair":[]
+	"device-pair":[]
 }
 
 function observeEvents(event, callback) {
