@@ -42,20 +42,35 @@ function explore(peripheral) {
               logger.info(' > [C]: %s', characteristic_uuid);
 
               var json = JSON.stringify({
-                command: 'wifi-configure', 
+                command: 'wifi-configure',
                 data: {
                   network: {
-                    network: 'FAIRMONT',
-                    security: 'None'
+                    ssid: 'FAIRMONT',
+                    security: 'unsecured'
                   }
                 }
               });
               characteristic.write(new Buffer('#'), true, function(err) {
-                characteristic.write(new Buffer(json + '\n'), true, function(err) {
+                characteristic.write(new Buffer(json), true, function(err) {
                   characteristic.write(new Buffer('$'), true, function(err) {
                     logger.debug(' - Write complete.');
 
-                    setTimeout(function() { peripheral.disconnect(); }, 1000);
+
+
+                    characteristic.write(new Buffer('#'), true, function(err) {
+                      characteristic.write(new Buffer(JSON.stringify({
+                        command: 'wifi-connect'
+                      })), true, function(err) {
+                        characteristic.write(new Buffer('$'), true, function(err) {
+                          logger.debug(' - Connect complete.');
+
+                          setTimeout(function() {
+                            peripheral.disconnect();
+                          }, 1000);
+                        });
+                      });
+                    });
+
                   });
                 });
               });
