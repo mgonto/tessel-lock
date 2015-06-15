@@ -10,6 +10,8 @@ bluetooth.init();
 
 bluetooth.on("wifi-configure", function(data){
   config.network = data;
+
+  console.log("WIFI CONFIGURATION", config.network);
 });
 
 bluetooth.on("wifi-release", function(data){
@@ -17,6 +19,7 @@ bluetooth.on("wifi-release", function(data){
 });
 
 bluetooth.on("wifi-connect", function(data){
+  console.log("WIFI CONNECTION");
   wifi.connect(config.network).then(networkready, networkerror);
 });
 

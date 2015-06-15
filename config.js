@@ -7,6 +7,10 @@ module.exports = {
         UNLOCKED_POSITION: 0.0,
         LOCKED_POSITION: 0.5
     },
+    bluetooth:{
+        PORT: 'B',
+        NAME: 'HyperLock'
+    },
     network: {
       ssid: 'FAIRMONT',
       security: 'unsecured'

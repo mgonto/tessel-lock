@@ -1,3 +1,4 @@
+var config = require('./config');
 var tessel = require('tessel');
 var adv = require('bleadvertise');
 
@@ -25,11 +26,11 @@ function throwEvent(event, data) {
 
 function initBluetooth() {
 
-	var blePort = tessel.port['B'];
+	var blePort = tessel.port[config.bluetooth.PORT];
 	ble = require('ble-ble113a').use(blePort, function(err) {
 
 			var service = adv.serialize({
-				completeName: "HyperLock"
+				completeName: config.bluetooth.NAME
 			});
 
 			console.log('Service:', service);
