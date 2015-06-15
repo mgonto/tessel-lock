@@ -29,7 +29,7 @@ bluetooth.on("wifi-connect", function(data){
 });
 bluetooth.on("hyperlock-pair", function(data){
   
-});
+}); 
 
 function networkready(data) {
   var client = hyperlock.create_lock_client({
