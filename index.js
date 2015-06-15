@@ -18,7 +18,7 @@ function unlock() {
   return servoInit.then(function() {
     return servo.move(120, false);
   });
-}
+} 
 
 
 wifi.connect(config.NETWORK).then(function(data) {
