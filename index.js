@@ -1,6 +1,7 @@
 var config = require('./config');
 var servo = require('./servo');
 var wifi = require('./wifi');
+var bluetooth = require('./bluetooth');
 var hyperlock = require('auth0-hyperlock-client');
 
 var servoInit = servo.init({
@@ -20,8 +21,21 @@ function unlock() {
   });
 } 
 
+bluetooth.on("wifi-configure", function(data){
+  config.NETWORK = data;
+});
+bluetooth.on("wifi-release", function(data){
+  // wifi.disconnect();
+});
+bluetooth.on("wifi-connect", function(data){
+  wifi.connect(config.NETWORK).then(onWifiConnects);
+});
+bluetooth.on("hyperlock-pair", function(data){
+  
+});
 
-wifi.connect(config.NETWORK).then(function(data) {
+
+function onWifiConnects(data) {
 
   var client = hyperlock.create_lock_client({
     url: config.DOORLOCK_URL,
