@@ -11,7 +11,7 @@ function connect(options){
       security: options.security,
       ssid: options.ssid,
       password: options.pass,
-      timeout: 30 // in seconds
+      timeout: 60 // in seconds
     });
 
     wifi.on('connect', function(data){
@@ -25,7 +25,7 @@ function connect(options){
     });
 
     wifi.on('disconnect', function(data){
-      console.log("Disconnected", data);
+      console.log("Disconnected from wifi", data);
     });
 
     wifi.on('error', function(err){

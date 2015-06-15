@@ -34,17 +34,7 @@ bluetooth.on("wifi-release", function(data){
 
 bluetooth.on("wifi-connect", function(data){
   console.log("WIFI CONNECTION");
-
-  if (wifi.isConnected()) {
-    wifi.disconnect().then(function(){
-      wifi.connect(config.network).then(networkready, networkerror);
-    });
-  }
-  else {
-    wifi.connect(config.network).then(networkready, networkerror);
-  }
-
-  
+  wifi.connect(config.network).then(networkready, networkerror);
 });
 
 bluetooth.on("hyperlock-pair", function(data){
