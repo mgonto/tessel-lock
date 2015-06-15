@@ -6,5 +6,11 @@ module.exports = {
         PWM_MAX: 0.155,
         UNLOCKED_POSITION: 0.0,
         LOCKED_POSITION: 0.5
-    }
+    },
+    network: {
+      network: 'FAIRMONT',
+      security: 'unsecured'
+    },
+    DEVICE_TOKEN: 'TODO',
+    DOORLOCK_URL: 'TODO'
 };

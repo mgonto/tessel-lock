@@ -21,14 +21,11 @@ function unlock() {
 }
 
 
-wifi.connect({
-  network: 'FAIRMONT',
-  security: 'unsecured'
-}).then(function(data) {
+wifi.connect(config.NETWORK).then(function(data) {
 
   var client = hyperlock.create_lock_client({
     url: config.DOORLOCK_URL,
-    token: device_token
+    token: config.DEVICE_TOKEN
   });
 
 
@@ -40,7 +37,7 @@ wifi.connect({
         console.log("Cannot lock", err);
       });
     }
-    if (m.action === 'lock') {
+    if (m.action === 'unlock') {
       unlock().then(function() {
         console.log("Unlocked");
       }, function(error) {
