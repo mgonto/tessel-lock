@@ -1,24 +1,14 @@
+var config = require('./config');
+
 var servo = require('./servo');
 process.stdin.resume();
 console.log("Initializing servo");
-servo.init({
-  SERVO_PORT: 'A',
-  SERVO_UID: 1
-}).then(function() {
-  console.log("Servo inited. Write commands now");
-  console.log("How many degrees dude?");
-  process.stdin.on('data', function (duty) {
-    duty = parseInt(String(duty), 10);
-    var forward = true
-    if (duty < 0) {
-      forward = false;
-      duty = duty * -1;
-    }
-    console.log('Setting command position:', duty, forward);
-    servo.move(duty, forward).then(function() {
-      console.log("Moved OK");
-    }, function(err) {
-      console.log("Error moving", err);
-    });
+var servoInit = servo.init(config.servo);
+
+function lock() {
+  return servoInit.then(function() {
+    return servo.move(120, true);
   });
-})
+}
+
+lock();

@@ -6,6 +6,18 @@ var hyperlock = require('auth0-hyperlock-client');
 
 var servoInit = servo.init(config.servo);
 
+function lock() {
+  return servoInit.then(function() {
+    return servo.move(120, true);
+  });
+}
+
+function unlock() {
+  return servoInit.then(function() {
+    return servo.move(120, false);
+  });
+}
+
 bluetooth.init();
 
 bluetooth.on("wifi-configure", function(data){
@@ -51,14 +63,14 @@ function networkready(data) {
 
   client.on('message', function (m) {
     if (m.action === 'lock') {
-      servo.lock().then(function() {
+      lock().then(function() {
         console.log("Locked");
       }, function(error) {
         console.log("Cannot lock", err);
       });
     }
     if (m.action === 'unlock') {
-      servo.unlock().then(function() {
+      unlock().then(function() {
         console.log("Unlocked");
       }, function(error) {
         console.log("Cannot unlock", err);

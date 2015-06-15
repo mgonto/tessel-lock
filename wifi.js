@@ -26,7 +26,6 @@ function connect(options){
 
     wifi.on('disconnect', function(data){
       console.log("Disconnected", data);
-      reject(data);
     });
 
     wifi.on('error', function(err){

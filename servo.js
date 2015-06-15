@@ -86,15 +86,3 @@ function init(configuration) {
 
   })
 }
-
-function lock() {
-  return loaded.then(function() {
-    return servo.move(120, true);
-  });
-}
-
-function unlock() {
-  return loaded.then(function() {
-    return servo.move(120, false);
-  });
-}
