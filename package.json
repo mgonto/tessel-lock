@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/mgonto/tessel-lock",
   "dependencies": {
+    "ble-ble113a": "^0.2.0",
+    "bleadvertise": "^0.1.1",
     "q": "^1.4.1",
     "servo-pca9685": "^0.1.3"
   }
