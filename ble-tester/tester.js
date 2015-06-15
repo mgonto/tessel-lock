@@ -1,36 +1,70 @@
+var async = require('async');
 var noble = require('noble');
+var logger = require('./logger');
+
+console.log('\n HyperLock BLE Tester\n');
 
 noble.on('stateChange', function(state) {
+  logger.info('BLE state: %s', state);
+
   if (state === 'poweredOn') {
+    logger.debug('Scanning for devices...');
+
     noble.startScanning();
   } else {
     noble.stopScanning();
+
+    logger.debug('Scan stopped.');
   }
 });
 
 noble.on('discover', function(peripheral) {
-  console.log('peripheral discovered (' + peripheral.uuid +
-              ' with address <' + peripheral.address +  ', ' + peripheral.addressType + '>, RSSI ' + peripheral.rssi + ':');
-  console.log('\thello my local name is:');
-  console.log('\t\t' + peripheral.advertisement.localName);
-  console.log('\tcan I interest you in any of the following advertised services:');
-  console.log('\t\t' + JSON.stringify(peripheral.advertisement.serviceUuids));
+  if (peripheral.advertisement.localName && peripheral.advertisement.localName.indexOf('HyperLock') >= 0) {
+    logger.info('Found: %s (%s)', peripheral.advertisement.localName, peripheral.uuid);
 
-  var serviceData = peripheral.advertisement.serviceData;
-  if (serviceData && serviceData.length) {
-    console.log('\there is my service data:');
-    for (var i in serviceData) {
-      console.log('\t\t' + JSON.stringify(serviceData[i].uuid) + ': ' + JSON.stringify(serviceData[i].data.toString('hex')));
-    }
+    explore(peripheral);
   }
-  if (peripheral.advertisement.manufacturerData) {
-    console.log('\there is my manufacturer data:');
-    console.log('\t\t' + JSON.stringify(peripheral.advertisement.manufacturerData.toString('hex')));
-  }
-  if (peripheral.advertisement.txPowerLevel !== undefined) {
-    console.log('\tmy TX power level is:');
-    console.log('\t\t' + peripheral.advertisement.txPowerLevel);
-  }
-
-  console.log();
 });
+
+function explore(peripheral) {
+  peripheral.connect(function(error) {
+    peripheral.discoverServices([], function(error, services) {
+      for (var serviceIndex = 0; serviceIndex < services.length; serviceIndex++) {
+        var service = services[serviceIndex];
+        if (service.uuid === 'd752c5fb13804cd5b0efcac7d72cff20') {
+
+          // Get charecteristics.
+          service.discoverCharacteristics([], function(error, characteristics) {
+            for (var characteristicIndex = 0; characteristicIndex < characteristics.length; characteristicIndex++) {
+              var characteristic = characteristics[characteristicIndex];
+              var characteristic_uuid = characteristic.uuid;
+
+              logger.info(' > [C]: %s', characteristic_uuid);
+
+              var json = JSON.stringify({
+                command: 'wifi-configure', 
+                data: {
+                  network: {
+                    network: 'FAIRMONT',
+                    security: 'None'
+                  }
+                }
+              });
+              characteristic.write(new Buffer('#'), true, function(err) {
+                characteristic.write(new Buffer(json + '\n'), true, function(err) {
+                  characteristic.write(new Buffer('$'), true, function(err) {
+                    logger.debug(' - Write complete.');
+
+                    setTimeout(function() { peripheral.disconnect(); }, 1000);
+                  });
+                });
+              });
+
+              return;
+            }
+          });
+        }
+      }
+    });
+  });
+}
