@@ -88,13 +88,13 @@ function init(configuration) {
 }
 
 function lock() {
-  return servoInit.then(function() {
+  return loaded.then(function() {
     return servo.move(120, true);
   });
 }
 
 function unlock() {
-  return servoInit.then(function() {
+  return loaded.then(function() {
     return servo.move(120, false);
   });
 }

@@ -5,13 +5,13 @@ var hyperlock = require('auth0-hyperlock-client');
 
 var servoInit = servo.init(config.servo);
 
-wifi.connect(config.NETWORK).then(function(data) {
+wifi.connect(config.NETWORK).then(networkready, networkerror);
 
+function networkready(data) {
   var client = hyperlock.create_lock_client({
     url: config.DOORLOCK_URL,
     token: config.DEVICE_TOKEN
   });
-
 
   client.on('message', function (m) {
     if (m.action === 'lock') {
@@ -34,12 +34,11 @@ wifi.connect(config.NETWORK).then(function(data) {
     console.log("Hyperlock crashed", err);
     process.exit(0);
   })
+}
 
-}, function(err) {
+function networkerror(err) {
   console.log("Cannot connect to Wifi", err);
   process.exit(0);
-});
-
-
+}
 
 console.log('dotenv', config, servo);
