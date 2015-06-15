@@ -1,7 +1,10 @@
 var servo = require('./servo');
 process.stdin.resume();
 console.log("Initializing servo");
-servo.init().then(function() {
+servo.init({
+  SERVO_PORT: 'A',
+  SERVO_NUMBER: 1
+}).then(function() {
   console.log("Servo inited. Write commands now");
   console.log("How many degrees dude?");
   process.stdin.on('data', function (duty) {

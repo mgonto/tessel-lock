@@ -1,26 +1,28 @@
 var tessel = require('tessel');
 var servolib = require('servo-pca9685');
-var Constants = require('./constants');
 var Promise = require('q').Promise;
 
 // Config
-var servo = servolib.use(tessel.port[Constants.SERVO_PORT]);
-var servoNumber = Constants.SERVO_NUMBER;
+var config = null;
+var servo;
+var servoNumber;
+var loaded = null;
 
-
-var loaded = new Promise(function(resolve, reject) {
-  servo.on('ready', function () {
-    console.log("Ready");
-    servo.configure(servoNumber, 0.05, 0.14, function () {
-      console.log("Configured");
-      resolve(true);  
+var load = function() {
+  loaded = new Promise(function(resolve, reject) {
+    servo.on('ready', function () {
+      console.log("Ready");
+      servo.configure(servoNumber, 0.05, 0.14, function () {
+        console.log("Configured");
+        resolve(true);  
+      });
+    });
+    servo.on('error', function (err) {
+      console.log("there was an error");
+      reject(err);
     });
   });
-  servo.on('error', function (err) {
-    console.log("there was an error");
-    reject(err);
-  });
-});
+}
 
 var read = function() {
   return loaded.then(function() {
@@ -38,7 +40,7 @@ var read = function() {
 
 function move(degrees, forward) {
   return read().then(function(reading) {
-    var movement = degrees * Constants.NINETY_DEG / 90;
+    var movement = degrees * 0.57 / 90;
     if (!forward) {
       movement = reading - movement;
     }
@@ -60,7 +62,11 @@ function move(degrees, forward) {
   });  
 }
 
-function init() {
+function init(configuration) {
+  config = configuration;
+  servo = servolib.use(tessel.port[config.SERVO_PORT]);
+  servoNumber = config.SERVO_NUMBER;
+  load();
   return loaded.then(function() {
     return new Promise(function(resolve, reject) {
       servo.move(servoNumber, 0, function(err) {
