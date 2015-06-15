@@ -24,6 +24,8 @@ ble = require('ble-ble113a').use(blePort, function(err) {
 
 	ble.on('disconnect', function(connection) {
 		console.log('Disconnect:', connection);
+		console.log('Advertising again');
+		ble.startAdvertising();
 	});
 
 	ble.on('remoteWrite', function(connection, index, valueWritten) {
