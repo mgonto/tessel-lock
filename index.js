@@ -4,10 +4,8 @@ var wifi = require('./wifi');
 var bluetooth = require('./bluetooth');
 var hyperlock = require('auth0-hyperlock-client');
 
-var servoInit = servo.init({
-  PORT: config.SERVO_PORT,
-  UID: config.SERVO_UID
-});
+var servoInit = servo.init(config.servo);
+
 
 function lock() {
   return servoInit.then(function() {
@@ -28,31 +26,28 @@ bluetooth.on("wifi-release", function(data){
   // wifi.disconnect();
 });
 bluetooth.on("wifi-connect", function(data){
-  wifi.connect(config.NETWORK).then(onWifiConnects);
+  wifi.connect(config.NETWORK).then(networkready);
 });
 bluetooth.on("hyperlock-pair", function(data){
   
 });
 
-
-function onWifiConnects(data) {
-
+function networkready(data) {
   var client = hyperlock.create_lock_client({
     url: config.DOORLOCK_URL,
     token: config.DEVICE_TOKEN
   });
 
-
   client.on('message', function (m) {
     if (m.action === 'lock') {
-      lock().then(function() {
+      servoInit.lock().then(function() {
         console.log("Locked");
       }, function(error) {
         console.log("Cannot lock", err);
       });
     }
     if (m.action === 'unlock') {
-      unlock().then(function() {
+      servoInit.unlock().then(function() {
         console.log("Unlocked");
       }, function(error) {
         console.log("Cannot unlock", err);
@@ -64,12 +59,11 @@ function onWifiConnects(data) {
     console.log("Hyperlock crashed", err);
     process.exit(0);
   })
+}
 
-}, function(err) {
+function networkerror(err) {
   console.log("Cannot connect to Wifi", err);
   process.exit(0);
-});
-
-
+}
 
 console.log('dotenv', config, servo);

@@ -9,8 +9,10 @@ var servoUID;
 var loaded = null;
 
 
-exports.move = move;
 exports.init = init;
+exports.move = move;
+exports.lock = lock;
+exports.unlock = unlock;
 
 function load() {
   loaded = new Promise(function(resolve, reject) {
@@ -69,7 +71,7 @@ function move(degrees, forward) {
 function init(configuration) {
   config = configuration;
   servo = servolib.use(tessel.port[config.PORT]);
-  servoNumber = config.UID;
+  servoUID = config.UID;
   load();
   return loaded.then(function() {
     return new Promise(function(resolve, reject) {
@@ -83,4 +85,16 @@ function init(configuration) {
     });
 
   })
+}
+
+function lock() {
+  return loaded.then(function() {
+    return servo.move(120, true);
+  });
+}
+
+function unlock() {
+  return loaded.then(function() {
+    return servo.move(120, false);
+  });
 }
