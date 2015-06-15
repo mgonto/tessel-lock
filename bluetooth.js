@@ -16,9 +16,14 @@ function observeEvents(event, callback) {
 	observers[event].push(callback);
 }
 
+function log(message) {
+  var slice = Array.prototype.slice;
+  log.apply(console, ['[bluetooth] ' + (arguments[0] || ''), slice.call(arguments, 1)]);
+}
+
 function throwEvent(event, data) {
-	console.log(event,data);
-	if (observers[event] === undefined) return; 
+	log(event, data);
+	if (observers[event] === undefined) return;
 	observers[event].forEach(function(callback){
 		callback(data);
 	});
@@ -33,34 +38,34 @@ function initBluetooth() {
 				completeName: config.bluetooth.NAME
 			});
 
-			console.log('Service:', service);
+			log('Service:', service);
 
 			ble.on('startAdvertising', function() {
-				console.log('Start advertising.');
+				log('Start advertising.');
 			});
 
 			ble.on('stopAdvertising', function() {
-				console.log('Stop advertising.');
+				log('Stop advertising.');
 			});
 
 			ble.on('connect', function(connection) {
 
-				console.log('Connect:', connection);
+				log('Connect:', connection);
 
 				// ble.startEncryption(connection, function(err) {
 
-				// 	console.log('Encryption:', err);
+				// 	log('Encryption:', err);
 
 				// 	ble.enterPasskey('123123', function(err) {
 
-				// 		console.log('passkey', err);
+				// 		log('passkey', err);
 
 				// 		ble.getBonds(function(err, bonds) {
 			 //              if (err) {
 			 //                return callback && callback(err);
 			 //              }
 			 //              else {
-			 //                console.log("Got these bonds: ", bonds);
+			 //                log("Got these bonds: ", bonds);
 			 //              }
 			 //            });
 				// 	})
@@ -70,7 +75,7 @@ function initBluetooth() {
 			});
 
 			ble.on('disconnect', function(connection) {
-				console.log('Disconnect:', connection);
+				log('Disconnect:', connection);
 				ble.startAdvertising();
 			});
 
@@ -79,55 +84,49 @@ function initBluetooth() {
 			ble.on('remoteWrite', function(connection, index, valueWritten) {
 
 				var message = valueWritten.toString('utf8');
-
-				console.log('Remote Write:', message);
-				console.log('Index:', index);
+				log('Remote Write: ', message);
+				log('Index:', index);
 
 				if (message === "#") {
 					buffer["connection" + connection] = "";
-				}				
-				else{
-					if (message === "$") {
+				} else if (message === "$") {
+					obj = JSON.parse(buffer["connection" + connection]);
 
-						obj = JSON.parse(buffer["connection" + connection]);
+					log("received object", obj);
 
-						console.log("received object", obj);
+					throwEvent(obj.command, obj.data);
 
-						throwEvent(obj.command, obj.data);
-
-						buffer["connection" + connection] = "";
-
-					}		
-					else{
-						buffer["connection" + connection] += message;
-					}
+					buffer["connection" + connection] = "";
+				} else {
+					buffer["connection" + connection] += message;
 				}
+
 
 			});
 
 			ble.on('remoteReadRequest', function(connection, index) {
-				console.log('Remote Read Request:', connection, index);
+				log('Remote Read Request:', connection, index);
 			});
 
 			ble.on('remoteNotification', function(connection, index) {
-				console.log('Remote Notification:', connection, index);
+				log('Remote Notification:', connection, index);
 			});
 
 			ble.on('remoteIndication', function(connection) {
-				console.log('Remote Indication:', connection);
+				log('Remote Indication:', connection);
 			});
 
 			ble.on('remoteUpdateStop', function(connection) {
-				console.log('Remote Update Stop:', connection);
+				log('Remote Update Stop:', connection);
 			});
 
 			ble.on('indicated', function(connection) {
-				console.log('Indicated:', connection);
+				log('Indicated:', connection);
 			});
 
 			ble.setAdvertisingData(service, function(err) {
 				if (err) {
-					return console.log(err);
+					return log(err);
 				}
 				ble.startAdvertising();
 			});
