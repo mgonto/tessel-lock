@@ -17,7 +17,7 @@ function unlock() {
     return servo.move(120, false);
   });
 } 
-
+bluetooth.init();
 bluetooth.on("wifi-configure", function(data){
   config.NETWORK = data;
 });
@@ -63,4 +63,4 @@ function networkready(data) {
 function networkerror(err) {
   console.log("Cannot connect to Wifi", err);
   process.exit(0);
-});
+};
