@@ -5,13 +5,19 @@ var Promise = require('q').Promise;
 function connect(options){
 
   var timeouts = 0;
-  return new Promise(function(reject, resolve) {
+  return new Promise(function(resolve, reject) {
     console.log("Trying to connect");
     wifi.connect({
       security: options.security,
       ssid: options.ssid,
       password: options.pass,
       timeout: 60 // in seconds
+    }, function(err, res) {
+      console.log("Callback for connect", err, res);
+      if (err) {
+        return reject(err);
+      }
+      return resolve(res);
     });
 
     wifi.on('connect', function(data){
@@ -19,35 +25,10 @@ function connect(options){
         console.log("Connected, no DHCP yet. Let's wait");
       } else {
         console.log("Connected", data);
-        resolve(true);
+        resolve(data);
       }
 
     });
-
-    wifi.on('disconnect', function(data){
-      console.log("Disconnected from wifi", data);
-    });
-
-    wifi.on('error', function(err){
-      console.log("Error :(", err);
-      reject(err);
-    });
-
-
-    var timeouts
-
-    wifi.on('timeout', function(err) {
-      console.log("timeout emitted");
-      timeouts++;
-      if (timeouts > 2) {
-        console.log("Doing powercycle");
-        resolve(powerCycle());
-      } else {
-        console.log("Trying to connect");
-        resolve(connect(options));
-      }
-    });
-
   });
 
 }
