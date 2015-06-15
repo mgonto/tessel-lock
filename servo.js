@@ -5,16 +5,20 @@ var Promise = require('q').Promise;
 // Config
 var config = null;
 var servo;
-var servoNumber;
+var servoUID;
 var loaded = null;
 
-var load = function() {
+
+exports.move = move;
+exports.init = init;
+
+function load() {
   loaded = new Promise(function(resolve, reject) {
     servo.on('ready', function () {
       console.log("Ready");
-      servo.configure(servoNumber, 0.05, 0.14, function () {
+      servo.configure(servoUID, 0.05, 0.14, function () {
         console.log("Configured");
-        resolve(true);  
+        resolve(true);
       });
     });
     servo.on('error', function (err) {
@@ -24,10 +28,10 @@ var load = function() {
   });
 }
 
-var read = function() {
+function read() {
   return loaded.then(function() {
     return new Promise(function(resolve, reject) {
-      servo.read(servoNumber, function(err, reading) {
+      servo.read(servoUID, function(err, reading) {
         if (err) {
           return reject(err);
         }
@@ -52,24 +56,24 @@ function move(degrees, forward) {
     }
     console.log("About to move", movement, degrees, forward);
     return new Promise(function(resolve, reject) {
-      servo.move(servoNumber, movement, function(err) {
+      servo.move(servoUID, movement, function(err) {
         if (err) {
           return reject(err);
         }
         return resolve(true);
       });
     });
-  });  
+  });
 }
 
 function init(configuration) {
   config = configuration;
-  servo = servolib.use(tessel.port[config.SERVO_PORT]);
-  servoNumber = config.SERVO_NUMBER;
+  servo = servolib.use(tessel.port[config.PORT]);
+  servoNumber = config.UID;
   load();
   return loaded.then(function() {
     return new Promise(function(resolve, reject) {
-      servo.move(servoNumber, 0, function(err) {
+      servo.move(servoUID, 0, function(err) {
         if (err) {
           return reject(err);
         }
@@ -77,9 +81,6 @@ function init(configuration) {
         return resolve(true);
       });
     });
-    
+
   })
 }
-
-exports.move = move;
-exports.init = init;
