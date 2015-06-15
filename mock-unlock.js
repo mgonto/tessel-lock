@@ -5,9 +5,8 @@ hyperlock.action({
     url: config.DOORLOCK_URL,
     token: config.USER_TOKEN,
     device_id: config.DEVICE_ID,
-    data: { action: 'lock' }                    
+    data: { action: 'unlock' }
 }, function (err) {
     console.log("Sent!", err);
     process.exit(0);
 });
-

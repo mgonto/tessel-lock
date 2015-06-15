@@ -7,7 +7,7 @@ module.exports = {
         UNLOCKED_POSITION: 0.0,
         LOCKED_POSITION: 0.5
     },
-    network: {
+    NETWORK: {
       network: 'FAIRMONT',
       security: 'unsecured'
     },
