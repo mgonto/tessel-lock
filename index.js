@@ -36,13 +36,18 @@ bluetooth.on("wifi-connect", function(data){
   wifi.connect(config.network).then(networkready, networkerror);
 });
 
-bluetooth.on("hyperlock-pair", function(data){
+bluetooth.on("device-pair", function(data){
 
-  //TODO
+  config.DEVICE_TOKEN = data.device_token
+  pairDevice();
 
 });
 
-function networkready(data) {
+function networkready(){
+  console.log("CONNECTED TO WIFI!!");
+}
+
+function pairDevice() {
   var client = hyperlock.create_lock_client({
     url: config.DOORLOCK_URL,
     token: config.DEVICE_TOKEN
