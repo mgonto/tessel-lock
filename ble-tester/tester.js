@@ -18,7 +18,7 @@ var instructions = {
   }
 }
 
-logger.info('\n HyperLock BLE Tester\n');
+logger.info('HyperLock BLE Tester');
 
 noble.on('stateChange', function(state) {
   logger.info('BLE state: %s', state);
@@ -62,6 +62,7 @@ function explore(peripheral) {
                 send(characteristic, instructions['wifi-connect'], function () {
                   logger.debug(' - WIFI connection established from HyperLock complete.');
                   setTimeout(function() {
+                    logger.info(' - Peripheral disconnect');
                     peripheral.disconnect();
                   }, 1000);
                 });
