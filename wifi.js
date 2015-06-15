@@ -69,5 +69,31 @@ function powerCycle() {
   });
 }
 
+// disconnect the wifi chip progammatically
+function disconnect(options){
+
+  return new Promise(function(reject, resolve) {
+    console.log("Trying to disconnect");
+    wifi.disconnect(function(err){
+      if (err) {
+        reject(new Error(err));
+      } else {
+        resolve(true);
+      }
+    });
+  });
+
+}
+
+function isConnected() {
+  return wifi.isConnected();
+}
+function isBusy() {
+  return wifi.isBusy();
+}
+
 exports.powerCycle = powerCycle;
 exports.connect = connect;
+exports.disconnect = disconnect;
+exports.isConnected = isConnected;
+exports.isBusy = isBusy;

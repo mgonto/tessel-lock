@@ -15,15 +15,31 @@ bluetooth.on("wifi-configure", function(data){
 });
 
 bluetooth.on("wifi-release", function(data){
-  // wifi.disconnect();
+
+  console.log('disconnect wifi')
+  wifi.disconnect();
 });
 
 bluetooth.on("wifi-connect", function(data){
   console.log("WIFI CONNECTION");
-  wifi.connect(config.network).then(networkready, networkerror);
+
+  if (wifi.idBusy()) return;
+
+  if (wifi.isConnected()) {
+    wifi.disconnect().then(function(){
+      wifi.connect(config.network).then(networkready, networkerror);
+    });
+  }
+  else {
+    wifi.connect(config.network).then(networkready, networkerror);
+  }
+
+  
 });
 
 bluetooth.on("hyperlock-pair", function(data){
+
+  //TODO
 
 });
 
