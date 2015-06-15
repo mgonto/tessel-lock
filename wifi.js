@@ -19,7 +19,7 @@ function connect(options){
         console.log("Connected, no DHCP yet. Let's wait");
       } else {
         console.log("Connected", data);
-        resolve(data);
+        resolve(true);
       }
 
     });
@@ -63,13 +63,13 @@ function powerCycle() {
         } else {
           resolve(true);
         }
-        }, 20 * 1000);
+      }, 20 * 1000);
     });
   });
 }
 
 // disconnect the wifi chip progammatically
-function disconnect(options){
+function disconnect(options) {
 
   return new Promise(function(reject, resolve) {
     console.log("Trying to disconnect");
