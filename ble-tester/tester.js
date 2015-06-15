@@ -2,7 +2,23 @@ var async = require('async');
 var noble = require('noble');
 var logger = require('./logger');
 
-console.log('\n HyperLock BLE Tester\n');
+var instructions = {
+  'wifi-configure': {
+    command: 'wifi-configure',
+    data: {
+      ssid: 'FAIRMONT',
+      security: 'unsecured'
+    }
+  },
+  'wifi-connect': {
+    command: 'wifi-connect'
+  },
+  'wifi-disconnect': {
+    command: 'wifi-disconnect'
+  }
+}
+
+logger.info('\n HyperLock BLE Tester\n');
 
 noble.on('stateChange', function(state) {
   logger.info('BLE state: %s', state);
@@ -41,45 +57,30 @@ function explore(peripheral) {
 
               logger.info(' > [C]: %s', characteristic_uuid);
 
-              var json = JSON.stringify({
-                command: 'wifi-configure',
-                data: {
-                  
-                  ssid: 'FAIRMONT',
-                  security: 'unsecured'
-                  
-                }
-              });
-              characteristic.write(new Buffer('#'), true, function(err) {
-                characteristic.write(new Buffer(json), true, function(err) {
-                  characteristic.write(new Buffer('$'), true, function(err) {
-                    logger.debug(' - Write complete.');
-
-
-
-                    characteristic.write(new Buffer('#'), true, function(err) {
-                      characteristic.write(new Buffer(JSON.stringify({
-                        command: 'wifi-connect'
-                      })), true, function(err) {
-                        characteristic.write(new Buffer('$'), true, function(err) {
-                          logger.debug(' - Connect complete.');
-
-                          setTimeout(function() {
-                            peripheral.disconnect();
-                          }, 1000);
-                        });
-                      });
-                    });
-
-                  });
+              send(characteristic, instructions['wifi-configure'], function () {
+                logger.debug(' - WIFI configuration written from HyperLock complete.');
+                send(characteristic, instructions['wifi-connect'], function () {
+                  logger.debug(' - WIFI connection established from HyperLock complete.');
+                  setTimeout(function() {
+                    peripheral.disconnect();
+                  }, 1000);
                 });
-              });
-
+              })
               return;
             }
           });
         }
       }
+    });
+  });
+}
+
+function send(characteristic, json, done) {
+  characteristic.write(new Buffer('#'), true, function(err) {
+    characteristic.write(new Buffer(JSON.stringify(json)), true, function(err) {
+      characteristic.write(new Buffer('$'), true, function(err) {
+        done();
+      });
     });
   });
 }
