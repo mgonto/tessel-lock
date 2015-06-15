@@ -7,8 +7,8 @@ module.exports = {
         UNLOCKED_POSITION: 0.0,
         LOCKED_POSITION: 0.5
     },
-    NETWORK: {
-      network: 'FAIRMONT',
+    network: {
+      ssid: 'FAIRMONT',
       security: 'unsecured'
     },
     DEVICE_TOKEN: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkZXZpY2VfaWQiOiI1NTdmMGMxNjBlYWZmOTViNjE1N2M1ZGEiLCJpYXQiOjE0MzQzODk1MjZ9.c-9pEVHrbCaOihSDMfuMezSCQKhnNdwGhYa85CPrtHY',

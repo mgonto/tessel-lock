@@ -9,7 +9,7 @@ var servoInit = servo.init(config.servo);
 bluetooth.init();
 
 bluetooth.on("wifi-configure", function(data){
-  config.NETWORK = data;
+  config.network = data;
 });
 
 bluetooth.on("wifi-release", function(data){
@@ -17,7 +17,7 @@ bluetooth.on("wifi-release", function(data){
 });
 
 bluetooth.on("wifi-connect", function(data){
-  wifi.connect(config.NETWORK).then(networkready, networkerror);
+  wifi.connect(config.network).then(networkready, networkerror);
 });
 
 bluetooth.on("hyperlock-pair", function(data){

@@ -15,7 +15,9 @@ function observeEvents(event, callback) {
 	observers[event].push(callback);
 }
 
-function notify(event, data) {
+function throwEvent(event, data) {
+	console.log(event,data);
+	if (observers[event] === undefined) return; 
 	observers[event].forEach(function(callback){
 		callback(data);
 	});
@@ -71,16 +73,35 @@ function initBluetooth() {
 				ble.startAdvertising();
 			});
 
+			var buffer = {};
+
 			ble.on('remoteWrite', function(connection, index, valueWritten) {
-				if (index === 5) {
-					console.log('Remote Write:', valueWritten.toString('ascii'));
 
-					var message = valueWritten.toString('utf8');
+				var message = valueWritten.toString('utf8');
 
-					obj = JSON.parse(message);
+				console.log('Remote Write:', message);
+				console.log('Index:', index);
 
-					handle(obj.command, obj.data);
+				if (message === "#") {
+					buffer["connection" + connection] = "";
+				}				
+				else{
+					if (message === "$") {
+
+						obj = JSON.parse(buffer["connection" + connection]);
+
+						console.log("received object", obj);
+
+						throwEvent(obj.command, obj.data);
+
+						buffer["connection" + connection] = "";
+
+					}		
+					else{
+						buffer["connection" + connection] += message;
+					}
 				}
+
 			});
 
 			ble.on('remoteReadRequest', function(connection, index) {

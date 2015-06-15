@@ -9,7 +9,7 @@ function connect(options){
     console.log("Trying to connect");
     wifi.connect({
       security: options.security,
-      ssid: options.network,
+      ssid: options.ssid,
       password: options.pass,
       timeout: 30 // in seconds
     });
