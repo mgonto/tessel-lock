@@ -35,8 +35,6 @@ bluetooth.on("wifi-release", function(data){
 bluetooth.on("wifi-connect", function(data){
   console.log("WIFI CONNECTION");
 
-  if (wifi.idBusy()) return;
-
   if (wifi.isConnected()) {
     wifi.disconnect().then(function(){
       wifi.connect(config.network).then(networkready, networkerror);

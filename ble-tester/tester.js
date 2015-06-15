@@ -44,10 +44,10 @@ function explore(peripheral) {
               var json = JSON.stringify({
                 command: 'wifi-configure',
                 data: {
-                  network: {
-                    ssid: 'FAIRMONT',
-                    security: 'unsecured'
-                  }
+                  
+                  ssid: 'FAIRMONT',
+                  security: 'unsecured'
+                  
                 }
               });
               characteristic.write(new Buffer('#'), true, function(err) {
