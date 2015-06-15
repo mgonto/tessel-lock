@@ -12,5 +12,5 @@ module.exports = {
       security: 'unsecured'
     },
     DEVICE_TOKEN: 'TODO',
-    DOORLOCK_URL: 'TODO'
+    DOORLOCK_URL: 'http://hyperlock.herokuapp.com'
 };
