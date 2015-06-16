@@ -18,7 +18,7 @@ function observeEvents(event, callback) {
 
 function log(message) {
   var slice = Array.prototype.slice;
-  log.apply(console, ['[bluetooth] ' + (arguments[0] || ''), slice.call(arguments, 1)]);
+  console.log.apply(console, ['[bluetooth] ' + (arguments[0] || ''), slice.call(arguments, 1)]);
 }
 
 function throwEvent(event, data) {
