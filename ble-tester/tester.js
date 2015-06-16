@@ -16,7 +16,7 @@ var instructions = {
   'wifi-disconnect': {
     command: 'wifi-disconnect'
   },
-  'device-pair':{
+  'device-pair': {
     command:"device-pair",
     data:{
       device_token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkZXZpY2VfaWQiOiI1NTdmMGMxNjBlYWZmOTViNjE1N2M1ZGEiLCJpYXQiOjE0MzQzODk1MjZ9.c-9pEVHrbCaOihSDMfuMezSCQKhnNdwGhYa85CPrtHY'
@@ -68,19 +68,12 @@ function explore(peripheral) {
                 send(characteristic, instructions['wifi-connect'], function () {
                   logger.debug(' - WIFI connection established from HyperLock complete.');
 
-                  send(characteristic, instructions['device-pair'], function () {
-                    logger.debug(' - Setting up pairing info.');
-
-                    setTimeout(function() {
+                  setTimeout(function() {
                       logger.info(' - Peripheral disconnect');
                       peripheral.disconnect();
                     }, 1000);
-                  });
-                  
-
 
                   
-
 
 
                 });

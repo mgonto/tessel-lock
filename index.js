@@ -45,9 +45,11 @@ bluetooth.on("device-pair", function(data){
 
 function networkready(){
   console.log("CONNECTED TO WIFI!!");
+  pairDevice();
 }
 
 function pairDevice() {
+  console.log("Pairing device");
   var client = hyperlock.create_lock_client({
     url: config.DOORLOCK_URL,
     token: config.DEVICE_TOKEN
